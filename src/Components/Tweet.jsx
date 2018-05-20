@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 
 class Tweet extends React.Component {
   constructor(props) {
@@ -8,10 +9,7 @@ class Tweet extends React.Component {
       message: '',
     };
     this.handleChange = this.handleChange.bind(this);
-  }
-
-  postTweet(message) {
-
+    this.handleClick = this.handleClick.bind(this);
   }
 
   handleChange(e) {
@@ -20,12 +18,19 @@ class Tweet extends React.Component {
     });
   }
 
+  handleClick() {
+    axios.post('/post', { message: this.state.message })
+      .then(() => {
+        console.log('Posted successfully');
+      });
+  }
+
   render() {
     return (
       <div>
         <p>Tweet Component</p>
         <input type="text" value={this.state.message} onChange={this.handleChange}></input>
-        <input type="submit"></input>
+        <input type="submit" onClick={this.handleClick}></input>
       </div>
     );
   }

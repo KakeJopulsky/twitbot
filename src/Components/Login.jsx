@@ -8,12 +8,17 @@ class Login extends React.Component {
     this.state = {
 
     };
+    this.checkLoggedIn.bind(this);
+  }
+
+  checkLoggedIn = () => {
+    console.log('hey');
   }
 
   render() {
     return (
       <div>
-        <a href="/auth/twitter/login"> Login using twitter </a>
+        <a href="/auth/twitter/login" onClick={this.checkLoggedIn}> Login using twitter </a>
       </div>
     )
   }
