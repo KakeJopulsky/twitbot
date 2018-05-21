@@ -31,6 +31,14 @@ const insert = (tweetObj, callback) => {
   });
 };
 
+const find = (id, callback) => {
+  Tweet.findById(id, (err, res) => {
+    if (err) return callback(err);
+    callback(res);
+  });
+};
+
 module.exports = {
   insert,
+  find,
 };
