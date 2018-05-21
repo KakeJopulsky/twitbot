@@ -5,9 +5,12 @@ mongoose.connect('mongodb://localhost/twitter');
 const db = mongoose.connection;
 
 const tweetSchema = mongoose.Schema({
+  // id: { type: Number, index: true, required: true },
   user: { type: String, required: true },
-  text: { type: String, required: true },
-  date: { type: Date, required: true },
+  message: { type: String, required: true },
+  date: { type: String, required: true },
+  token: { type: String, required: true },
+  token_secret: { type: String, required: true },
 });
 
 const Tweet = mongoose.model('Tweet', tweetSchema);
@@ -21,9 +24,11 @@ db.once('open', () => {
 
 mongoose.Promise = Promise;
 
-const insert = (tweet) => {
-  const newTweet = new Tweet({ user: tweet.username, text: tweet.message, date: tweet.date });
-  return newTweet.save();
+const insert = (tweetObj, callback) => {
+  Tweet.create(tweetObj, (err, entry) => {
+    if (err) return callback(err, null);
+    callback(null, entry._id);
+  });
 };
 
 module.exports = {

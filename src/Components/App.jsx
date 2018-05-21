@@ -1,6 +1,7 @@
 import React, { Component } from 'React';
 import Tweet from './Tweet.jsx';
 import Login from './Login.jsx';
+
 //import PrivateRoute from './PrivateRoute.jsx';
 import {
   BrowserRouter as Router,
@@ -27,16 +28,16 @@ class App extends React.Component {
         <div>
         <ul>
           <li>
-            <Link to="/login">Login</Link>
+            <Link to="/login" className="login-text">Login</Link>
           </li>
-          {/* <li>
+          <li>
             <Link to="/tweet">Tweet</Link>
-          </li> */}
+          </li>
         </ul>
 
         <Switch>
-          <Route path="/login" component={Login} />
-          <Route path="/tweet" component={Tweet} />
+          <Route exact path="/login" component={Login} />
+          <Route exact path="/tweet" component={Tweet} />
         </Switch>
           </div>
       </Router>

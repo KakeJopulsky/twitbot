@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
-// const { insert } = require('../database/db.js');
+const { insert } = require('../database/db.js');
 const passport = require('passport');
 const TwitterStrategy = require('passport-twitter').Strategy;
 const session = require('express-session');
@@ -19,26 +19,59 @@ app.use(passport.session());
 app.use(bodyParser.json());
 app.listen(1337, () => console.log('Sup dogs we listing on port 1337'));
 
-/*  Routes  */
-
-// app.get('/', (req, res) => {
-//   res.render('index', { user: req.user });
-// });
 app.use('/', express.static(path.join(__dirname, '../dist/')));
 app.use('/login', express.static(path.join(__dirname, '../dist/')));
 app.use('/tweet', express.static(path.join(__dirname, '../dist/')));
 
+/*
 
-/*   Twitter login */
 
+// Twitter authorization
+
+
+*/
+// For db entry
+const newTweet = {
+  user: '',
+  message: '',
+  date: '',
+  token: '',
+  token_secret: '',
+};
+
+// For posting to Twit
 const user = {
   consumer_key: CONSUMER_KEY,
   consumer_secret: CONSUMER_SECRET,
+  access_token: '',
+  access_token_secret: '',
 };
 
-app.post('/post', ({ body: { message } }, res) => {
-  makeTweet(message, user);
+/*
+  ROUTE TO POST TO TWITTER
+*/
+
+const tweetQueue = [];
+// implement message bus
+// anytime new tweet added, sort tweetQueue
+// place [0] in cron job
+
+
+// Post new entry to db, and update tweetQueue
+app.post('/post', ({ body: { message, time } }, res) => {
+  newTweet.message = message;
+  newTweet.date = time;
+  insert(newTweet, (err, id) => {
+    if (err) return console.log(err);
+    tweetQueue.push({ date: time, listingId: id });
+  });
 });
+
+/*
+
+PASSPORT AUTH
+
+*/
 
 app.get('/auth/twitter/login', passport.authenticate('twitter'));
 app.get('/auth/twitter/callback',
@@ -60,6 +93,9 @@ passport.use(new TwitterStrategy({
   consumerSecret: CONSUMER_SECRET,
   callbackURL: 'http://127.0.0.1:1337/auth/twitter/callback',
 }, (token, tokenSecret, profile, cb) => {
+  newTweet.user = profile.username;
+  newTweet.token = token;
+  newTweet.token_secret = tokenSecret;
   user.access_token = token;
   user.access_token_secret = tokenSecret;
   return cb(null, profile);
