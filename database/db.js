@@ -33,12 +33,26 @@ const insert = (tweetObj, callback) => {
 
 const find = (id, callback) => {
   Tweet.findById(id, (err, res) => {
-    if (err) return callback(err);
-    callback(res);
+    if (err, null) return callback(err);
+    callback(null, res);
   });
+};
+
+const findAll = (callback) => {
+  Tweet.find({}, (err, res) => {
+    if (err) return callback(err, null);
+    return callback(null, res);
+  });
+};
+
+const removeFromDb = (id) => {
+  Tweet.findById(id).remove().exec();
+  console.log('removed from db');
 };
 
 module.exports = {
   insert,
   find,
+  findAll,
+  removeFromDb,
 };

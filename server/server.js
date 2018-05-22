@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
-const { insert, find } = require('../database/db.js');
+const { insert, find, removeFromDb, findAll } = require('../database/db.js');
 const passport = require('passport');
 const TwitterStrategy = require('passport-twitter').Strategy;
 const session = require('express-session');
@@ -40,7 +40,6 @@ const newTweet = {
   token_secret: '',
 };
 
-// For posting to Twit
 const user = {
   consumer_key: CONSUMER_KEY,
   consumer_secret: CONSUMER_SECRET,
@@ -49,52 +48,72 @@ const user = {
 };
 
 /*
-  INSERT INTO DB, UPDATE QUEUE, SORT QUEUE
+
+  TWEET SCHEDULING AND POSTING
+
 */
 
-const tweetQueue = [];
-let nextTweet = [];
+const tweetQueue = [];  // { date: time, tweetId: id }
+let nextTweet = null;
 
-const sendTweet = (message, auth) => {
+const sendTweet = (message, auth, id) => {
   const T = new Twit(auth);
 
   T.post('statuses/update', { status: `${message}` }, (err, data, response) => {
-    console.log(data);
+    console.log('Successfully posted to Twitter!');
   });
+  removeFromDb(id);
 };
 
 const getTweet = (id) => {
   find(id, (err, res) => {
     if (err) return console.log(err);
-    console.log(res);
-  });
-  // sendTweet();
-}
-getTweet('5b0318c61975f1c64d05df51');
-
-const nextToTweet = (id, time) => {
-  if (tweetQueue.length === 0) {
-    return;
-  }
-  if (nextTweet[0] > tweetQueue[tweetQueue.length - 1]) {
-    const temp = nextTweet;
-    nextTweet = tweetQueue.pop();
-    tweetQueue.push(nextTweet);
-  }
-  schedule.scheduleJob(nextTweet[0], () => {
-    console.log('The answer to life, the universe, and everything!');
-    getTweet();
+    const { message, token, token_secret } = res;
+    user.access_token = token;
+    user.access_token_secret = token_secret;
+    sendTweet(message, user, id);
   });
 };
 
-// Post new entry to db, and update tweetQueue
+const nextToTweet = () => {
+  console.log('in nextToTweet');
+  if (tweetQueue.length === 0) { return; }
+  if (!nextTweet) {
+    console.log('!nextTweet');
+    nextTweet = tweetQueue.pop();
+  } else if (nextTweet.date > (tweetQueue[tweetQueue.length - 1].date)) {
+    const temp = nextTweet;
+    nextTweet = tweetQueue.pop();
+    tweetQueue.push(nextTweet);
+  } else {
+    return;
+  }
+
+  let t = nextTweet.date - Date.now();
+  const job = () => {
+    console.log('in job', nextTweet.date);
+    schedule.scheduleJob(nextTweet.date, () => {
+      console.log('The answer to life, the universe, and everything!' + nextTweet.date);
+      getTweet(nextTweet.tweetId);
+      nextTweet = null;
+      nextToTweet();
+    });
+  };
+  setTimeout(job, t - 1000);
+};
+
+
+/*
+  INSERT INTO DB, UPDATE/SORT QUEUE, VERIFY NEXT TO TWEET
+*/
+
 app.post('/post', ({ body: { message, time } }, res) => {
   newTweet.message = message;
   newTweet.date = time;
   insert(newTweet, (err, id) => {
     if (err) return console.log(err);
     tweetQueue.push({ date: time, tweetId: id });
-    tweetQueue.sort((a, b) => a.time - b.time);
+    tweetQueue.sort((a, b) => a.date - b.date);
     nextToTweet();
   });
 });
@@ -133,8 +152,19 @@ passport.use(new TwitterStrategy({
   return cb(null, profile);
 }));
 
-/*
+// Filter stale tweets and push to queue
+const processTweets = (tweets) => {
+  const tweetBatch = tweets.filter(tweet => tweet.date - Date.now() > 10000);
+  tweetBatch.forEach((tweet) => { tweetQueue.push({ date: tweet.date, tweetId: tweet._id }); });
+  nextToTweet();
+};
 
-  TWEET SCHEDULING AND POSTING
+async function getTweetsFromDatabase() {
+  // Get all tweets
+  await findAll((err, data) => {
+    if (err, null) return console.log(err);
+    processTweets(data);
+  });
+}
 
-*/
+getTweetsFromDatabase();
