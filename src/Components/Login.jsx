@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import { Button, ButtonToolbar } from 'react-bootstrap';
 
 class Login extends React.Component {
   constructor(props) {
@@ -24,12 +25,14 @@ class Login extends React.Component {
         console.log(err);
       });
   }
+  
 
   render() {
     return (
-      <div>
-        <a href="/auth/twitter/login" onClick={this.login}> Login using twitter </a>
-        <a onClick={this.login}> Login using twitter </a>
+      <div className="well">
+        <Button bsStyle="primary" bsSize="large" href='/auth/twitter/login' block>Login to Twitter</Button>
+        {/* <a href="/auth/twitter/login" onClick={this.login}> Login using twitter </a>
+        <a onClick={this.login}> Login using twitter </a> */}
       </div>
     )
   }

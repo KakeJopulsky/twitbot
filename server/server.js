@@ -21,7 +21,6 @@ app.use(bodyParser.json());
 app.listen(1337, () => console.log('Sup dogs we listing on port 1337'));
 
 app.use('/', express.static(path.join(__dirname, '../dist/')));
-app.use('/login', express.static(path.join(__dirname, '../dist/')));
 app.use('/tweet', express.static(path.join(__dirname, '../dist/')));
 
 /*
@@ -127,7 +126,7 @@ PASSPORT AUTH
 app.get('/auth/twitter/login', passport.authenticate('twitter'));
 app.get('/auth/twitter/callback',
   passport.authenticate('twitter', {
-    failureRedirect: '/login',
+    failureRedirect: '/',
     successRedirect: '/tweet' })
 );
 
@@ -153,18 +152,18 @@ passport.use(new TwitterStrategy({
 }));
 
 // Filter stale tweets and push to queue
-const processTweets = (tweets) => {
-  const tweetBatch = tweets.filter(tweet => tweet.date - Date.now() > 10000);
-  tweetBatch.forEach((tweet) => { tweetQueue.push({ date: tweet.date, tweetId: tweet._id }); });
-  nextToTweet();
-};
+// const processTweets = (tweets) => {
+//   const tweetBatch = tweets.filter(tweet => tweet.date - Date.now() > 10000);
+//   tweetBatch.forEach((tweet) => { tweetQueue.push({ date: tweet.date, tweetId: tweet._id }); });
+//   nextToTweet();
+// };
 
-async function getTweetsFromDatabase() {
-  // Get all tweets
-  await findAll((err, data) => {
-    if (err, null) return console.log(err);
-    processTweets(data);
-  });
-}
+// async function getTweetsFromDatabase() {
+//   // Get all tweets
+//   await findAll((err, data) => {
+//     if (err, null) return console.log(err);
+//     processTweets(data);
+//   });
+// }
 
-getTweetsFromDatabase();
+// getTweetsFromDatabase();

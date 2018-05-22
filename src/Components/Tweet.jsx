@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import Datetime from 'react-datetime';
 import moment from 'moment'
+import { Form, FormGroup, FormControl, ControlLabel, Button } from 'react-bootstrap';
 
 class Tweet extends React.Component {
   constructor(props) {
@@ -27,6 +28,9 @@ class Tweet extends React.Component {
       .then(() => {
         console.log('Posted successfully');
       });
+    this.setState({
+      message: '',
+    });
   }
 
   handleDate(date) {
@@ -38,8 +42,13 @@ class Tweet extends React.Component {
     return (
       <div>
         <p>Tweet Component</p>
-        <input type="text" value={this.state.message} onChange={this.handleChange}></input>
-        <input type="submit" onClick={this.handleClick}></input>
+        <FormGroup controlId="formControlsTextarea">
+          <ControlLabel>Enter a tweet</ControlLabel>
+          <FormControl componentClass="textarea" placeholder="..." value={this.state.message} onChange={this.handleChange} />
+        </FormGroup>
+        <Button bsStyle="primary" onClick={this.handleClick}>Tweet</Button>
+        {/* <input type="text" value={this.state.message} onChange={this.handleChange}></input> */}
+        {/* <input type="submit" c></input> */}
         <Datetime onChange={this.handleDate}/>
       </div>
     );

@@ -1,6 +1,8 @@
 import React, { Component } from 'React';
 import Tweet from './Tweet.jsx';
 import Login from './Login.jsx';
+import { PageHeader } from 'react-bootstrap';
+
 
 //import PrivateRoute from './PrivateRoute.jsx';
 import {
@@ -24,23 +26,16 @@ class App extends React.Component {
 
   render() {
     return (
+      <div className="container">
       <Router>
         <div>
-        <ul>
-          <li>
-            <Link to="/login" className="login-text">Login</Link>
-          </li>
-          <li>
-            <Link to="/tweet">Tweet</Link>
-          </li>
-        </ul>
-
-        <Switch>
-          <Route exact path="/login" component={Login} />
+          <Link to="/" className="login-text"><small>Login</small></Link>
+          <Link to="/tweet"><small>Tweet</small></Link>
+          <Route exact path="/" component={Login} />
           <Route exact path="/tweet" component={Tweet} />
-        </Switch>
-          </div>
+        </div>
       </Router>
+      </div>
     );
   };
 }
