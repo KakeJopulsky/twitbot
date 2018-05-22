@@ -52,8 +52,8 @@ const user = {
 
 */
 
-const tweetQueue = [];  // { date: time, tweetId: id }
-let nextTweet = null;
+let tweetQueue = []; // { date: time, tweetId: id }
+const nextTweet = null;
 
 const sendTweet = (message, auth, id) => {
   const T = new Twit(auth);
@@ -65,6 +65,7 @@ const sendTweet = (message, auth, id) => {
 };
 
 const getTweet = (id) => {
+  console.log(id);
   find(id, (err, res) => {
     if (err) return console.log(err);
     const { message, token, token_secret } = res;
@@ -75,32 +76,18 @@ const getTweet = (id) => {
 };
 
 const nextToTweet = () => {
-  console.log('in nextToTweet');
-  if (tweetQueue.length === 0) { return; }
-  if (!nextTweet) {
-    console.log('!nextTweet');
-    nextTweet = tweetQueue.pop();
-  } else if (nextTweet.date > (tweetQueue[tweetQueue.length - 1].date)) {
-    const temp = nextTweet;
-    nextTweet = tweetQueue.pop();
-    tweetQueue.push(nextTweet);
-  } else {
-    return;
-  }
-
-  let t = nextTweet.date - Date.now();
-  const job = () => {
-    console.log('in job', nextTweet.date);
-    schedule.scheduleJob(nextTweet.date, () => {
-      console.log('The answer to life, the universe, and everything!' + nextTweet.date);
-      getTweet(nextTweet.tweetId);
-      nextTweet = null;
-      nextToTweet();
+  const scheduleArray = [];
+  tweetQueue.forEach((tweet) => {
+    scheduleArray.push({
+      id: tweet.tweetId,
+      job: schedule.scheduleJob(tweet.date, () => {
+        console.log('The answer to life, the universe, and everything!' + tweet.tweetId);
+        getTweet(tweet.tweetId);
+      }),
     });
-  };
-  setTimeout(job, t - 1000);
+  });
+  tweetQueue = [];
 };
-
 
 /*
   INSERT INTO DB, UPDATE/SORT QUEUE, VERIFY NEXT TO TWEET
@@ -152,18 +139,18 @@ passport.use(new TwitterStrategy({
 }));
 
 // Filter stale tweets and push to queue
-// const processTweets = (tweets) => {
-//   const tweetBatch = tweets.filter(tweet => tweet.date - Date.now() > 10000);
-//   tweetBatch.forEach((tweet) => { tweetQueue.push({ date: tweet.date, tweetId: tweet._id }); });
-//   nextToTweet();
-// };
+const processTweets = (tweets) => {
+  const tweetBatch = tweets.filter(tweet => tweet.date - Date.now() > 10000);
+  tweetBatch.forEach((tweet) => { tweetQueue.push({ date: tweet.date, tweetId: tweet._id }); });
+  nextToTweet();
+};
 
-// async function getTweetsFromDatabase() {
-//   // Get all tweets
-//   await findAll((err, data) => {
-//     if (err, null) return console.log(err);
-//     processTweets(data);
-//   });
-// }
+async function getTweetsFromDatabase() {
+  // Get all tweets
+  await findAll((err, data) => {
+    if (err, null) return console.log(err);
+    processTweets(data);
+  });
+}
 
-// getTweetsFromDatabase();
+getTweetsFromDatabase();
