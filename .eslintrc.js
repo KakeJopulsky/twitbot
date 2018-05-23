@@ -1,9 +1,9 @@
-module.exports = {
-  "parser": "babel-eslint",
-  "extends": "airbnb-base",
-  "plugins": [
-    "react",
-    "jsx-a11y",
-    "import"
-  ]
-};
+// module.exports = {
+//   "parser": "babel-eslint",
+//   "extends": "airbnb-base",
+//   "plugins": [
+//     "react",
+//     "jsx-a11y",
+//     "import"
+//   ]
+// };

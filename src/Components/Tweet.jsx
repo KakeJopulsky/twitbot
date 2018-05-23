@@ -41,7 +41,6 @@ class Tweet extends React.Component {
   render() {
     return (
       <div>
-        <p>Tweet Component</p>
         <FormGroup controlId="formControlsTextarea">
           <ControlLabel>Enter a tweet</ControlLabel>
           <FormControl componentClass="textarea" placeholder="..." value={this.state.message} onChange={this.handleChange} />

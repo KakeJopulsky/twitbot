@@ -1,10 +1,8 @@
 import React, { Component } from 'React';
 import Tweet from './Tweet.jsx';
 import Login from './Login.jsx';
-import { PageHeader } from 'react-bootstrap';
+import { PageHeader, Jumbotron } from 'react-bootstrap';
 
-
-//import PrivateRoute from './PrivateRoute.jsx';
 import {
   BrowserRouter as Router,
   Route,
@@ -26,18 +24,20 @@ class App extends React.Component {
 
   render() {
     return (
-      <div className="container">
-      <Router>
-        <div>
-          <Link to="/" className="login-text"><small>Login</small></Link>
-          <Link to="/tweet"><small>Tweet</small></Link>
-          <Route exact path="/" component={Login} />
-          <Route exact path="/tweet" component={Tweet} />
-        </div>
-      </Router>
+      <div className="container-fluid">
+  
+        <Router>
+          <div>
+            <Link to="/" className="login-text"><small>Login</small></Link>
+            <Link to="/tweet"><small>Tweet</small></Link>
+            <Route exact path="/" component={Login} />
+            <Route exact path="/tweet" component={Tweet} />
+          </div>
+        </Router>
+  
       </div>
     );
-  };
+  }
 }
 
 export default App;

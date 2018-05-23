@@ -29,12 +29,12 @@ class Login extends React.Component {
 
   render() {
     return (
-      <div className="well">
+      <div>
         <Button bsStyle="primary" bsSize="large" href='/auth/twitter/login' block>Login to Twitter</Button>
         {/* <a href="/auth/twitter/login" onClick={this.login}> Login using twitter </a>
         <a onClick={this.login}> Login using twitter </a> */}
       </div>
-    )
+    );
   }
 }
 
