@@ -27,9 +27,9 @@ class App extends React.Component {
       <div className="container-fluid">
   
         <Router>
-          <div>
-            <Link to="/" className="login-text"><small>Login</small></Link>
-            <Link to="/tweet"><small>Tweet</small></Link>
+          <div className="row">
+            <Link className="col" to="/" className="login-text"><small>Login</small></Link>
+            <Link className="col" to="/tweet"><small>Tweet</small></Link>
             <Route exact path="/" component={Login} />
             <Route exact path="/tweet" component={Tweet} />
           </div>

@@ -18,21 +18,15 @@ class Login extends React.Component {
 
   login = () => {
     axios.get('/auth/twitter/login')
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      .then(res => console.log(res))
+      .catch(err => console.log(err));
   }
   
 
   render() {
     return (
-      <div>
+      <div className="login-button">
         <Button bsStyle="primary" bsSize="large" href='/auth/twitter/login' block>Login to Twitter</Button>
-        {/* <a href="/auth/twitter/login" onClick={this.login}> Login using twitter </a>
-        <a onClick={this.login}> Login using twitter </a> */}
       </div>
     );
   }

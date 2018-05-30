@@ -12,6 +12,7 @@ class Tweet extends React.Component {
       message: '',
       date: '',
     };
+    
     this.handleChange = this.handleChange.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.handleDate = this.handleDate.bind(this);

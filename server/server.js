@@ -12,8 +12,10 @@ const schedule = require('node-schedule');
 const app = express();
 app.use(session({
   secret: 'keep it secret, keep it safe',
+  key: 'sports',
   resave: true,
   saveUninitialized: true,
+  // cookie: { secure: true }
 }));
 app.use(passport.initialize());
 app.use(passport.session());
