@@ -41,14 +41,12 @@ class Tweet extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className="tweet-component">
         <FormGroup controlId="formControlsTextarea">
           <ControlLabel>Enter a tweet</ControlLabel>
-          <FormControl componentClass="textarea" placeholder="..." value={this.state.message} onChange={this.handleChange} />
+          <FormControl bsSize="large" componentClass="textarea" placeholder="..." value={this.state.message} onChange={this.handleChange} />
         </FormGroup>
         <Button bsStyle="primary" onClick={this.handleClick}>Tweet</Button>
-        {/* <input type="text" value={this.state.message} onChange={this.handleChange}></input> */}
-        {/* <input type="submit" c></input> */}
         <Datetime onChange={this.handleDate}/>
       </div>
     );

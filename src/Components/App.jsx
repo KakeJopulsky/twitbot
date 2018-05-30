@@ -1,6 +1,8 @@
 import React, { Component } from 'React';
 import Tweet from './Tweet.jsx';
 import Login from './Login.jsx';
+import Footer from './Footer.jsx';
+import Queue from './Queue.jsx';
 import { PageHeader, Jumbotron } from 'react-bootstrap';
 
 import {
@@ -24,17 +26,23 @@ class App extends React.Component {
 
   render() {
     return (
-      <div className="container-fluid">
+      <div>
+      <div className="container">
   
         <Router>
           <div className="row">
-            <Link className="col" to="/" className="login-text"><small>Login</small></Link>
-            <Link className="col" to="/tweet"><small>Tweet</small></Link>
+            <div className="links">
+              <Link to="/" className="login-text"><small>Login</small></Link>
+              <Link to="/tweet"><small>Tweet</small></Link>
+              <Link to="/queue" className="queue-text"><small>Queue</small></Link>
+            </div>
             <Route exact path="/" component={Login} />
             <Route exact path="/tweet" component={Tweet} />
+            <Route exact path="/queue" component={Queue} />
           </div>
         </Router>
-  
+      </div>
+      <Footer />
       </div>
     );
   }
